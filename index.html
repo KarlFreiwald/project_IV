@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Climate Impact Dashboard</title>
+<title>Impact of Climate Events on World Economics</title>
 <link rel="stylesheet" href="css/style.css">
 <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
+
 <body>
 
 <div class="title">Impact of Climate Events on World Economics</div>
@@ -19,18 +20,31 @@
     <label>Year</label>
     <input type="range" id="year-slider" min="2000" max="2025" value="2020">
     <div id="year-label">2020</div>
+
+    <label>Severity</label>
+    <input type="range" id="severity-slider" min="0" max="9" value="0">
+    <div id="severity-label">0+</div>
   </div>
 
   <div class="charts">
+    <div class="tabs">
+      <button data-tab="incidents" class="active">Number of Incidents</button>
+      <button data-tab="damage">Economic Damage</button>
+      <button data-tab="aid">International Aid</button>
+      <button data-tab="casualties">Casualties</button>
+    </div>
+
     <div id="map"></div>
     <div id="bar"></div>
   </div>
 
 </div>
 
+<div id="tooltip" class="tooltip"></div>
+
 <script src="js/mapChart.js"></script>
 <script src="js/barChart.js"></script>
-<script src="js/main.js"></script>
+<script type="module" src="js/main.js"></script>
 
 </body>
 </html>
