@@ -1,0 +1,22 @@
+- select one / multiple countries for comparision
+	-> show / hide world map
+- general overview for map (cumulating all information)
+
+- map is pretty much the focus
+- change names (e.g. GAP)
+- highlight global settings as global
+
+
+
+---------------------------------------
+24.11.2025
+goal:	fully functioning website
+
+- Presentation (10+5 min)
+	- context
+	- development (tools, ...)
+	- demo (video / live)
+	- tests (feedback above)
+	- conclusion / future work
+- Demo Video
+- Code
