@@ -82,3 +82,83 @@ body {
     font-size: 12px;
     display: none;
 }
+
+.multi-select {
+  position: relative;
+  width: 180px;
+  user-select: none;
+  font-size: 13px;
+}
+
+/* sichtbarer Kopf des Dropdowns */
+.multi-select .dropdown-header {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.multi-select .dropdown-header:hover {
+  background-color: #f8f8f8;
+}
+
+/* kleiner Pfeil */
+.multi-select .dropdown-header::after {
+  content: "▼";
+  font-size: 10px;
+  color: #555;
+}
+
+/* Container für Checkboxen */
+.multi-select .dropdown-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  padding: 6px;
+}
+
+/* sichtbar, wenn Klasse "open" aktiv ist */
+.multi-select.open .dropdown-list {
+  display: block;
+}
+
+.dropdown-list label {
+  display: block;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.dropdown-list input[type="checkbox"] {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.dropdown-list button {
+  font-size: 11px;
+  margin: 3px 3px 5px 0;
+  padding: 3px 6px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f8f8f8;
+}
+
+.dropdown-list button:hover {
+  background-color: #eee;
+}
+
+
