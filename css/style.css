@@ -160,5 +160,15 @@ body {
 .dropdown-list button:hover {
   background-color: #eee;
 }
+.year-range {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.year-range input[type="range"] {
+  width: 180px;
+}
 
 

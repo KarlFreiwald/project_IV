@@ -1,3 +1,4 @@
+const d3 = window.d3;
 export function drawMap(world, dataArr, metric = "value") {
     const width = 900, height = 450;
     const tooltip = d3.select("#tooltip");

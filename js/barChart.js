@@ -1,3 +1,4 @@
+const d3 = window.d3;
 export function drawBar(data, tab) {
     const width = 900, height = 350;
     d3.select("#bar").html("");

@@ -1,6 +1,6 @@
 import { drawMap } from "./mapChart.js";
 import { drawBar } from "./barChart.js";
-
+const d3 = window.d3;
 const tabState = { current: "incidents" };
 
 Promise.all([
@@ -77,11 +77,27 @@ function init([climate, world]) {
       // Refresh charts
       update();
     });
-    // Sliders
-    d3.select("#year-slider").on("input", function() {
-        d3.select("#year-label").text(this.value);
+    // --- Year Range Slider (2020–2025) ---
+    // --- Year Range Sliders (2020–2025) ---
+    d3.select("#start-year").on("input", function() {
+      const start = +this.value;
+      const end = +d3.select("#end-year").property("value");
+      if (start <= end) {
+        d3.select("#year-label").text(`${start} – ${end}`);
         update();
+      }
     });
+    
+    d3.select("#end-year").on("input", function() {
+      const end = +this.value;
+      const start = +d3.select("#start-year").property("value");
+      if (start <= end) {
+        d3.select("#year-label").text(`${start} – ${end}`);
+        update();
+      }
+    });
+    
+
 
     d3.select("#severity-slider").on("input", function() {
         d3.select("#severity-label").text(this.value + "+");
@@ -90,7 +106,10 @@ function init([climate, world]) {
 
     d3.select("#event-dropdown").on("change", update);
     function update() {
-        const year = +d3.select("#year-slider").property("value");
+        // Parse selected range from label (e.g. "2020 – 2025")
+        const yearRange = d3.select('#year-label').text().split(' – ').map(Number);
+        const startYear = yearRange[0];
+        const endYear = yearRange[1];
         const sev = +d3.select("#severity-slider").property("value");
         const selectedTypes = dropdown
         .selectAll("input[type=checkbox]")
@@ -98,11 +117,13 @@ function init([climate, world]) {
         .nodes()
         .map(d => d.value);
 
-        const filtered = climate.filter(d =>
-        d.year === year &&
+       const filtered = climate.filter(d =>
+        d.year >= startYear &&
+        d.year <= endYear &&
         selectedTypes.includes(d.event_type) &&
         d.severity >= sev
-);
+    );
+
 
         const rolled = d3.rollups(
         filtered,

@@ -5,6 +5,7 @@
 <title>Impact of Climate Events on World Economics</title>
 <link rel="stylesheet" href="css/style.css">
 <script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/d3-simple-slider@1.10.5"></script>
 </head>
 
 <body>
@@ -18,9 +19,14 @@
     <div class="multi-select" id="event-dropdown"></div>
 
 
-    <label>Year</label>
-    <input type="range" id="year-slider" min="2000" max="2025" value="2020">
-    <div id="year-label">2020</div>
+  <label>Year Range</label>
+  <div class="year-range">
+    <input type="range" id="start-year" min="2020" max="2025" value="2020">
+    <input type="range" id="end-year"   min="2020" max="2025" value="2025">
+    <div id="year-label">2020 – 2025</div>
+  </div>
+
+
 
     <label>Severity</label>
     <input type="range" id="severity-slider" min="0" max="9" value="0">
