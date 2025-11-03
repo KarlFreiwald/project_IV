@@ -8,7 +8,8 @@ mapChart:
 - highlight global settings as global
 
 barChart:
-- add 2nd 
+- add y-axis
+- add 2nd bar plot into same barplot
 
 3rd Chart:
 - CREATE
