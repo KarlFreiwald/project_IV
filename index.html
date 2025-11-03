@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Impact of Climate Events on World Economics</title>
+
 <link rel="stylesheet" href="css/style.css">
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://unpkg.com/d3-simple-slider@1.10.5"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
 </head>
 
 <body>
@@ -15,22 +19,23 @@
 <div class="container">
 
   <div class="controls">
-    <label>Event Type</label>
-    <div class="multi-select" id="event-dropdown"></div>
 
+    <div class="event-type">
+      <label>Event Type</label>
+      <div class="multi-select" id="event-dropdown"></div>
+    </div>
 
-  <label>Year Range</label>
-  <div class="year-range">
-    <input type="range" id="start-year" min="2020" max="2025" value="2020">
-    <input type="range" id="end-year"   min="2020" max="2025" value="2025">
-    <div id="year-label">2020 – 2025</div>
-  </div>
+    <div class="year-range">
+      <label>Year Range</label>
+      <div id="yearRange"></div>
+      <span id="year-label">2000 – 2025</span>
+    </div>
 
-
-
-    <label>Severity</label>
-    <input type="range" id="severity-slider" min="0" max="9" value="0">
-    <div id="severity-label">0+</div>
+    <div class="severity">
+      <label>Severity</label>
+      <input type="range" id="severity-slider" min="0" max="9" value="0">
+      <div id="severity-label">0+</div>
+    </div>
   </div>
 
   <div class="charts">

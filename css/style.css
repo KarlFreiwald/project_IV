@@ -160,6 +160,7 @@ body {
 .dropdown-list button:hover {
   background-color: #eee;
 }
+
 .year-range {
   display: flex;
   flex-direction: column;
@@ -171,4 +172,29 @@ body {
   width: 180px;
 }
 
+/* === noUiSlider dual-handle styling === */
+#yearRange {
+  width: 180px;
+  margin: 10px 0;
+}
 
+.noUi-target {
+  background: #e0e0e0;
+  border-radius: 4px;
+  height: 6px;
+  border: none;
+}
+
+.noUi-connect {
+  background: #0077cc;
+}
+
+.noUi-handle {
+  border: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background: #0077cc;
+  cursor: pointer;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}

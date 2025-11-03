@@ -77,27 +77,67 @@ function init([climate, world]) {
       // Refresh charts
       update();
     });
-    // --- Year Range Slider (2020–2025) ---
-    // --- Year Range Sliders (2020–2025) ---
-    d3.select("#start-year").on("input", function() {
-      const start = +this.value;
-      const end = +d3.select("#end-year").property("value");
-      if (start <= end) {
-        d3.select("#year-label").text(`${start} – ${end}`);
-        update();
-      }
-    });
-    
-    d3.select("#end-year").on("input", function() {
-      const end = +this.value;
-      const start = +d3.select("#start-year").property("value");
-      if (start <= end) {
-        d3.select("#year-label").text(`${start} – ${end}`);
-        update();
-      }
-    });
-    
 
+    // --- Year Range Slider ---
+    const yearSlider = document.getElementById('yearRange');
+
+    noUiSlider.create(yearSlider, {
+      start: [2020, 2025],  // initial range
+      connect: true,
+      range: {
+        min: 2020,
+        max: 2025
+      },
+      step: 1,
+      tooltips: false
+    });
+
+    yearSlider.noUiSlider.on('update', function(values) {
+      const start = Math.round(values[0]);
+      const end = Math.round(values[1]);
+      d3.select("#year-label").text(`${start} – ${end}`);
+    });
+
+    yearSlider.noUiSlider.on('change', function(values) {
+      const start = Math.round(values[0]);
+      const end = Math.round(values[1]);
+      updateWithRange(start, end);
+    });
+
+    function updateWithRange(startYear, endYear) {
+      const sev = +d3.select("#severity").property("value");
+      const selectedTypes = dropdown
+        .selectAll("input[type=checkbox]")
+        .filter(function() { return this.checked; })
+        .nodes()
+        .map(d => d.value);
+
+      const filtered = climate.filter(d =>
+        d.year >= startYear &&
+        d.year <= endYear &&
+        selectedTypes.includes(d.event_type) &&
+        d.severity >= sev
+      );
+
+      const rolled = d3.rollups(
+        filtered,
+        v => ({
+          value: v.length,
+          damage: d3.sum(v, d => d.damage),
+          aid: d3.sum(v, d => d.aid),
+          casualties: d3.sum(v, d => d.casualties)
+        }),
+        d => d.country
+      );
+
+      const arr = rolled.map(([country, o]) => ({ country, ...o }));
+      let metricKey = "value";
+      switch (tabState.current) {
+        case "damage": metricKey = "damage"; break;
+        case "aid": metricKey = "aid"; break;
+        case "casualties": metricKey = "casualties"; break;
+      }
+    }
 
     d3.select("#severity-slider").on("input", function() {
         d3.select("#severity-label").text(this.value + "+");
