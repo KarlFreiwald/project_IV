@@ -1,6 +1,8 @@
 const d3 = window.d3;
 export function drawMap(world, dataArr, metric = "value") {
-    const width = 900, height = 450;
+    const container = d3.select("#map").node();
+    const width = Math.max(320, container.getBoundingClientRect().width);
+    const height = Math.round(width * 0.5);
     const tooltip = d3.select("#tooltip");
 
     d3.select("#map").html("");
@@ -85,15 +87,19 @@ export function drawMap(world, dataArr, metric = "value") {
 
     // --- End Zoom Setup ---
         // Add color bar
-        // --- Color Legend ---
-        const legendWidth = 200;
+        // --- Color Legend (responsive) ---
+        const legendMargin = 16;
+        const maxLegendWidth = 200;
+        const minLegendWidth = 100;
+        const legendWidth = Math.max(minLegendWidth, Math.min(maxLegendWidth, width - 2 * legendMargin));
         const legendHeight = 10;
-        const legendMargin = 40;
+        const legendX = Math.max(legendMargin, width - legendWidth - legendMargin);
+        const legendY = Math.max(legendMargin, height - legendMargin);
 
-        // Create group for the legend (bottom-right corner)
+        // Create group for the legend (bottom-right or left if too narrow)
         const legendGroup = svg.append("g")
         .attr("class", "legend")
-        .attr("transform", `translate(${width - legendWidth - legendMargin}, ${height - legendMargin})`);
+        .attr("transform", `translate(${legendX}, ${legendY})`);
 
         // Define gradient
         const defs = svg.append("defs");

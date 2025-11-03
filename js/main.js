@@ -200,4 +200,7 @@ function init([climate, world]) {
 
     }
     update();
+
+    // Redraw charts on resize to keep them within their containers
+    window.addEventListener('resize', update);
 }
