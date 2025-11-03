@@ -16,42 +16,48 @@
 
 <div class="title">Impact of Climate Events on World Economics</div>
 
-<div class="container">
+<!-- === Three-column layout container === -->
+<div class="main-container">
 
-  <div class="controls">
+  <!-- LEFT: Global Settings (20%) -->
+  <div class="settings-panel">
+    <div class="controls">
+      <div class="event-type">
+        <label>Event Type</label>
+        <div class="multi-select" id="event-dropdown"></div>
+      </div>
 
-    <div class="event-type">
-      <label>Event Type</label>
-      <div class="multi-select" id="event-dropdown"></div>
-    </div>
+      <div class="year-range">
+        <label>Year Range</label>
+        <div id="yearRange"></div>
+        <span id="year-label">2000 – 2025</span>
+      </div>
 
-    <div class="year-range">
-      <label>Year Range</label>
-      <div id="yearRange"></div>
-      <span id="year-label">2000 – 2025</span>
-    </div>
-
-    <div class="severity">
-      <label>Severity</label>
-      <input type="range" id="severity-slider" min="0" max="9" value="0">
-      <div id="severity-label">0+</div>
+      <div class="severity">
+        <label>Severity</label>
+        <input type="range" id="severity-slider" min="0" max="9" value="0">
+        <div id="severity-label">0+</div>
+      </div>
     </div>
   </div>
 
-  <div class="charts">
+  <!-- MIDDLE: Bar Chart (40%) -->
+  <div class="bar-section">
     <div class="tabs">
       <button data-tab="incidents" class="active">Number of Incidents</button>
       <button data-tab="damage">Economic Damage</button>
       <button data-tab="aid">International Aid</button>
       <button data-tab="casualties">Casualties</button>
     </div>
-
-    <div id="map"></div>
     <div id="bar"></div>
   </div>
 
-</div>
+  <!-- RIGHT: Map Chart (40%) -->
+  <div class="map-section">
+    <div id="map"></div>
+  </div>
 
+</div>
 <div id="tooltip" class="tooltip"></div>
 
 <script type="module" src="js/mapChart.js"></script>

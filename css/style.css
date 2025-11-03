@@ -38,13 +38,6 @@ body {
     font-size: 13px;
 }
 
-.charts {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
 .tabs {
     display: flex;
     gap: 10px;
@@ -172,29 +165,73 @@ body {
   width: 180px;
 }
 
-/* === noUiSlider dual-handle styling === */
+/* === noUiSlider: match Severity slider style === */
 #yearRange {
   width: 180px;
   margin: 10px 0;
 }
 
 .noUi-target {
-  background: #e0e0e0;
-  border-radius: 4px;
+  background: #d3d3d3;
+  border-radius: 6px;
   height: 6px;
   border: none;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
 }
 
 .noUi-connect {
   background: #0077cc;
+  border-radius: 6px;
 }
 
 .noUi-handle {
   border: none;
-  height: 14px;
-  width: 14px;
+  height: 18px;
+  width: 18px;
   border-radius: 50%;
-  background: #0077cc;
+  background: #4a4a4a;
   cursor: pointer;
   box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  transition: background 0.2s;
+}
+
+.noUi-handle:hover {
+  background: #2c2c2c;
+}
+
+.noUi-horizontal .noUi-handle {
+  top: -6px;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 20px;
+  padding: 0 20px 30px;
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+
+/* Left: settings (20%) */
+.settings-panel {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Middle: bar chart (40%) */
+.bar-section {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Right: map (40%) */
+.map-section {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
