@@ -6,6 +6,7 @@ const tabState = { current: "incidents" };
 Promise.all([
     d3.csv("data/climate.csv"),
     d3.json("data/world.geojson")
+    // d3.json("data/highResolution.geojson")
 ]).then(init);
 
 function init([climate, world]) {

@@ -29,18 +29,20 @@ export function drawMap(world, dataArr, metric = "value") {
         .attr("d", path)
         .attr("fill", d => color(lookup.get(d.properties.name) || 0))
         .attr("stroke", "#333")
+        .attr("stroke-width", 0.5)
         .on("mousemove", (event, d) => {
-            const val = lookup.get(d.properties.name) || 0;
+            const raw = lookup.get(d.properties.name) || 0;
+            const displayVal = d3.format(",d")(Math.round(raw));
             tooltip.style("display", "block")
                    .style("left", (event.pageX + 8) + "px")
                    .style("top", (event.pageY + 8) + "px")
-                   .html(`<strong>${d.properties.name}</strong><br>${val}`);
+                   .html(`<strong>${d.properties.name}</strong><br>${displayVal}`);
         })
         .on("mouseout", () => tooltip.style("display", "none"));
 
     // --- Zoom Setup ---
     const zoom = d3.zoom()
-        .scaleExtent([1, 5])
+        .scaleExtent([1, 10])
         .on("zoom", (e) => svg.selectAll("path").attr("transform", e.transform));
 
     svg.call(zoom);
