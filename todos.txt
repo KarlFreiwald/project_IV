@@ -1,3 +1,4 @@
+mapChart:
 - select one / multiple countries for comparision
 	-> show / hide world map
 - general overview for map (cumulating all information)
@@ -5,6 +6,12 @@
 - map is pretty much the focus
 - change names (e.g. GAP)
 - highlight global settings as global
+
+barChart:
+- add 2nd 
+
+3rd Chart:
+- CREATE
 
 
 
