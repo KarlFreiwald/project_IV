@@ -9,6 +9,8 @@ Promise.all([
     // d3.json("data/highResolution.geojson")
 ]).then(init);
 
+
+
 function init([climate, world]) {
     climate.forEach(d => {
         d.year = +new Date(d.date).getFullYear();
