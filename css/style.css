@@ -9,63 +9,103 @@ body {
   margin: 0;
   background: #f3f3f3;
   font-family: Arial, sans-serif;
-}
-
-/* ========== Page Structure ========== */
-.title {
-  text-align: center;
-  font-size: 28px;
-  font-weight: bold;
-  padding: 20px 0;
-}
-
-.main-container {
+  /* Now takes full viewport height */
+  height: 100vh; 
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: column; 
+}
+
+/* ========== Page Structure (Grid) ========== */
+
+/* * The .title styling is removed entirely
+ * and replaced by the new .section-title below.
+ */
+
+/* The main layout container now takes up the entire viewport */
+#main-grid-container {
+  display: grid;
+  
+  /* 2 columns, each taking 50% of the available width */
+  grid-template-columns: 1fr 1fr; 
+  
+  /* 2 rows, each taking 50% of the vertical space */
+  grid-template-rows: 1fr 1fr; 
+  
+  /* Assigning the names to the 2x2 grid */
+  grid-template-areas: 
+      "controls map"
+      "bar empty";
+  
+  flex-grow: 1; 
   width: 100%;
-  gap: 20px;
-  padding: 0 20px 30px;
+  height: 100%; /* Now uses the full 100vh provided by the body */
   box-sizing: border-box;
+  gap: 15px; 
+  padding: 15px;
 }
 
-/* optional older container */
-.container {
-  display: flex;
-  gap: 20px;
-  padding: 0 20px 30px;
+/* New Styling for the Title inside the Controls Box */
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
 }
 
-/* ========== 3-Column Layout ========== */
-.settings-panel {
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-}
+/* ========== Grid Area Layout & Styling ========== */
 
-.bar-section {
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.map-section {
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* ========== Controls ========== */
-.controls {
-  width: 230px;
+/* Global Settings */
+#global-settings-area {
+  grid-area: controls;
+  border-radius: 6px;
   padding: 15px;
   background: #fff;
-  border-radius: 6px;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; 
+  display: flex;
+  flex-direction: column;
 }
 
+/* Map Section */
+#map {
+  grid-area: map;
+  width: 100%;
+  height: 100%;
+}
+
+/* Bar Chart Section */
+#bar {
+  grid-area: bar;
+  width: 100%;
+  height: 100%;
+}
+
+/* New Empty Space Section */
+#empty-space {
+  grid-area: empty;
+  background: #fff;
+  border-radius: 6px;
+  padding: 10px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  border: 1px dashed #ccc; 
+  width: 100%;
+  height: 100%;
+}
+
+/* Adjust the inner controls container to fill its parent grid area */
+.controls {
+  width: 100%; 
+  padding: 0; 
+  background: none; 
+  box-shadow: none; 
+}
+
+
+/* ========== Controls ========== */
 .controls label {
   display: block;
   margin-top: 18px;
@@ -80,10 +120,12 @@ body {
   font-size: 13px;
 }
 
-/* ========== Tabs ========== */
+/* ========== Tabs (Adjusted for tighter fit in the controls area) ========== */
 .tabs {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap; 
+  gap: 5px;
+  margin-top: 15px; 
 }
 
 .tabs button {
@@ -106,7 +148,7 @@ body {
   background: #fff;
   border-radius: 6px;
   padding: 10px;
-  min-height: 350px;
+  min-height: 0; 
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
