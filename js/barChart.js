@@ -5,7 +5,11 @@ export function drawBar(data, tab) {
     const height = 350;
     const margin = { top: 20, right: 30, bottom: 80, left: 50 };
     const key = tab === 'incidents' ? 'value' : tab; // map UI tab to data key
+    
+    // Sort the data and get only the top 10
     const sorted = [...data].sort((a, b) => (b[key] || 0) - (a[key] || 0));
+    const top10Data = sorted.slice(0, 10); // <-- MODIFICATION: Get top 10
+    
     const tooltip = d3.select('#tooltip');
     d3.select("#bar").html("");
 
@@ -17,15 +21,15 @@ export function drawBar(data, tab) {
     const x = d3.scaleBand()
         .range([margin.left, width - margin.right])
         .padding(0.2)
-        .domain(sorted.map(d => d.country));
+        .domain(top10Data.map(d => d.country)); // <-- MODIFICATION: Use top10Data
 
     const y = d3.scaleLinear()
-        .domain([0, d3.max(sorted, d => d[key]) || 0])
+        .domain([0, d3.max(top10Data, d => d[key]) || 0]) // <-- MODIFICATION: Use top10Data
         .nice()
         .range([height - margin.bottom, margin.top]);
 
     svg.selectAll("rect")
-        .data(sorted)
+        .data(top10Data) // <-- MODIFICATION: Use top10Data
         .join("rect")
         .attr("x", d => x(d.country))
         .attr("y", d => y(d[key] || 0))
@@ -41,10 +45,10 @@ export function drawBar(data, tab) {
             };
             const fmt = formats[key] || d3.format(',d');
             tooltip
-              .style('display', 'block')
-              .style('left', (event.pageX + 8) + 'px')
-              .style('top', (event.pageY + 8) + 'px')
-              .html(`<strong>${d.country}</strong><br>${fmt(d[key] || 0)}`);
+                .style('display', 'block')
+                .style('left', (event.pageX + 8) + 'px')
+                .style('top', (event.pageY + 8) + 'px')
+                .html(`<strong>${d.country}</strong><br>${fmt(d[key] || 0)}`);
         })
         .on('mouseout', () => tooltip.style('display', 'none'));
 
