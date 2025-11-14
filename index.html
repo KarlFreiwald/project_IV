@@ -34,26 +34,28 @@
                 <input type="range" id="severity-slider" min="0" max="9" value="0">
                 <div id="severity-label">0+</div>
             </div>
-            
-            <div class="tabs">
-                <button data-tab="incidents" class="active">Number of Incidents</button>
-                <button data-tab="damage">Economic Damage</button>
-                <button data-tab="aid">International Aid</button>
-                <button data-tab="casualties">Casualties</button>
-            </div>
         </div>
+    </div>
+
+    <div id="map-area-container">
+        <div id="map">
+            </div>
+    </div>
+
+    <div id="buttons-container" class="tabs">
+        <button data-tab="incidents" class="active">Number of Incidents</button>
+        <button data-tab="damage">Economic Damage</button>
+        <button data-tab="aid">International Aid</button>
+        <button data-tab="casualties">Casualties</button>
     </div>
 
     <div id="bar">
         </div>
 
-    <div id="map">
-        </div>
-
     <div id="empty-space">
         </div>
 
-</div>
+    </div>
 <div id="tooltip" class="tooltip"></div>
 
 <script type="module" src="js/mapChart.js"></script>
