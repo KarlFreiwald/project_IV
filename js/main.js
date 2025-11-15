@@ -1,5 +1,6 @@
 import { drawMap } from "./mapChart.js";
 import { drawBar } from "./barChart.js";
+import { drawLine } from "./lineChart.js"; // New import for the line chart
 const d3 = window.d3;
 const tabState = { current: "incidents" };
 
@@ -12,6 +13,7 @@ Promise.all([
 
 function init([climate, world]) {
     climate.forEach(d => {
+        // Data parsing and cleanup
         d.year = +new Date(d.date).getFullYear();
         d.severity = +d.severity || 0;
         d.damage = +d.economic_impact_million_usd || 0;
@@ -84,7 +86,7 @@ function init([climate, world]) {
     const yearSlider = document.getElementById('yearRange');
 
     noUiSlider.create(yearSlider, {
-      start: [2020, 2025],  // initial range
+      start: [2020, 2025],  // initial range
       connect: true,
       range: {
         min: 2020,
@@ -101,14 +103,10 @@ function init([climate, world]) {
       // Note: The 'update' event is used to update the label text
     });
 
-    // MODIFICATION: Call the main update function when the slider stops changing
+    // Call the main update function when the slider stops changing
     yearSlider.noUiSlider.on('change', function() {
-      // The 'update' handler already updates the label, and 'update()' reads the label.
       update(); 
     });
-
-    // --- REMOVED THE REDUNDANT updateWithRange function here (Lines 125-154) ---
-    // The code below handles the severity slider and the main update logic.
 
     d3.select("#severity-slider").on("input", function() {
         d3.select("#severity-label").text(this.value + "+");
@@ -129,27 +127,28 @@ function init([climate, world]) {
         .nodes()
         .map(d => d.value);
 
+        // --- Data Filtering ---
         const filtered = climate.filter(d =>
-         d.year >= startYear &&
-         d.year <= endYear &&
-         selectedTypes.includes(d.event_type) &&
-         d.severity >= sev
+           d.year >= startYear &&
+           d.year <= endYear &&
+           selectedTypes.includes(d.event_type) &&
+           d.severity >= sev
         );
 
-
+        // --- Data Aggregation (for Map/Bar Chart) ---
         const rolled = d3.rollups(
-         filtered,
-         v => ({
-             value: v.length,
-         damage: d3.sum(v, d => d.damage),
-         aid: d3.sum(v, d => d.aid),
-         casualties: d3.sum(v, d => d.casualties)
-           }),
-         d => d.country
-         );
+          filtered,
+          v => ({
+            value: v.length, // incidents
+            damage: d3.sum(v, d => d.damage),
+            aid: d3.sum(v, d => d.aid),
+            casualties: d3.sum(v, d => d.casualties)
+          }),
+          d => d.country
+          );
 
         const arr = rolled.map(([country, o]) => ({
-             country, ...o
+            country, ...o
         }));
 
         // Determine which metric to display based on active tab
@@ -166,9 +165,12 @@ function init([climate, world]) {
                 break;
         }
 
-        // Pass the selected metric to drawMap() and drawBar()
+        // --- Chart Updates ---
         drawMap(world, arr, metricKey);
         drawBar(arr, tabState.current);
+        
+        // New: Draw the Line Chart using the filtered data and current metric
+        drawLine(filtered, metricKey); 
 
     }
     update();
