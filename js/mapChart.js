@@ -1,8 +1,11 @@
 const d3 = window.d3;
 export function drawMap(world, dataArr, metric = "value") {
     const container = d3.select("#map").node();
-    const width = Math.max(320, container.getBoundingClientRect().width);
-    const height = Math.round(width * 0.5);
+    //const width = Math.max(320, container.getBoundingClientRect().width);
+    const width = container.getBoundingClientRect().width;
+    //const height = Math.round(width * 0.5);
+    //const height = container.getBoundingClientRect().height || Math.round(width * 0.5);
+    const height = Math.round(width * 0.55);
     const tooltip = d3.select("#tooltip");
 
     d3.select("#map").html("");
