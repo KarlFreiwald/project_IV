@@ -161,10 +161,15 @@ body {
 
 /* Adjust the inner controls container to fill its parent grid area */
 .controls {
-  width: 100%; 
-  padding: 0; 
-  background: none; 
-  box-shadow: none; 
+    width: 100%;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;  /* Align contents to the top-left */
+    gap: 25px;               /* Nice spacing between Event/Year/Severity */
 }
 
 
