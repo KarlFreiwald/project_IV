@@ -1,4 +1,5 @@
 const d3 = window.d3;
+const fmt = d3.format(".2f");
 
 export function drawLine(data, metric, countries) {
     // Remove previous contents
@@ -88,7 +89,15 @@ export function drawLine(data, metric, countries) {
         .attr("fill", "none")
         .attr("stroke", d => color(d.country))
         .attr("stroke-width", 2.5)
-        .attr("d", d => line(d.values));
+        .attr("d", d => line(d.values))
+        .on("mouseover", (event, d) => {
+            window.dispatchEvent(new CustomEvent("countryHover", { detail: d.country }));
+            })
+        .on("mouseout", () => {
+            window.dispatchEvent(new CustomEvent("countryHoverEnd"));
+        });
+
+    
 
     // Draw circles for actual data points
     svg.selectAll(".point-group")
@@ -103,13 +112,39 @@ export function drawLine(data, metric, countries) {
         .filter(v => v.value !== undefined && !isNaN(v.value)) // only show real points
         .attr("cx", v => x(v.year))
         .attr("cy", v => y(v.value))
-        .attr("r", 3.5)
+        .attr("r", 5.5)
         .attr("fill", (v, i, nodes) => {
             const country = nodes[i].parentNode.__data__.country;
             return color(country);
         })
         .attr("stroke", "#fff")
-        .attr("stroke-width", 1.5);
+        .attr("stroke-width", 1.5)
+        .on("mouseover", (event, v) => {
+        const tooltip = d3.select("#line-tooltip");
+        const country = event.target.parentNode.__data__.country;
+        tooltip.style("display", "block")
+               // Always show tooltip on the LEFT
+            const tooltipNode = tooltip.node();
+            const tooltipWidth = tooltipNode.offsetWidth;
+        tooltip
+        .style("left", `${event.pageX - tooltipWidth - 12}px`)
+        .style("top", `${event.pageY + 12}px`)
+               .html(`
+                   <strong>${country}</strong><br>
+                   Year: ${v.year}<br>
+                   ${metricLabel}: ${v.value}
+               `);
+        window.dispatchEvent(new CustomEvent("countryHover", { detail: country }));
+        })
+        .on("mouseout", () => {
+            d3.select("#line-tooltip").style("display", "none");
+            window.dispatchEvent(new CustomEvent("countryHoverEnd"));
+        });
+
+        
+        
+        
+        ;
 
 
 
@@ -159,16 +194,44 @@ export function drawLine(data, metric, countries) {
         .text(`${metricLabel} - Selected Countries`);
 
     // --- Add legend ---
+    // --- Add legend with click & hover ---
     const legend = svg.append("g")
-        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+        .attr("transform", `translate(${width - 120}, ${margin.top})`);
 
-    legend.selectAll("text")
+    const legendItems = legend.selectAll("g")
         .data(series)
         .enter()
-        .append("text")
-        .attr("x", 15)
-        .attr("y", (_, i) => i * 18)
+        .append("g")
+        .attr("transform", (d, i) => `translate(0, ${i * 20})`)
+        .style("cursor", "pointer");
+
+    // colored box
+    legendItems.append("rect")
+        .attr("width", 12)
+        .attr("height", 12)
+        .attr("fill", d => color(d.country))
+        .attr("stroke", "#333");
+
+    // label
+    legendItems.append("text")
+        .attr("x", 18)
+        .attr("y", 10)
         .attr("fill", d => color(d.country))
         .style("font-size", "12px")
         .text(d => d.country);
+
+    // === CLICK to toggle ===
+    legendItems.on("click", (event, d) => {
+        const country = d.country;
+        window.dispatchEvent(new CustomEvent("legendToggle", { detail: country }));
+    });
+
+    // === Hover highlight ===
+    legendItems.on("mouseover", (event, d) => {
+        window.dispatchEvent(new CustomEvent("countryHover", { detail: d.country }));
+    });
+    legendItems.on("mouseout", () => {
+        window.dispatchEvent(new CustomEvent("countryHoverEnd"));
+    });
+
 }

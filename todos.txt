@@ -28,3 +28,22 @@ goal:	fully functioning website
 	- conclusion / future work
 - Demo Video
 - Code
+
+
+17.11.2025
+- Button Bar Chart
+- Hover Text formatieren (Runden, etc.)
+- Legenden anpassen
+- (Neu laden der Seite bugfix)
+- Land zu barChart hinzufügen
+- Pro capita
+- Basic Informationen einfügen (General settings, event type anzeigen)
+- heatmap scale
+- 
+
+
+- ChatGPT aufräumen (Deutsche Kommentare)
+- Heuristik Evaluation (Nielsen)
+- User Evaluation
+- Präsentation 
+- Video

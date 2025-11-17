@@ -41,7 +41,24 @@ export function drawMap(world, dataArr, metric = "value") {
                    .style("top", (event.pageY + 8) + "px")
                    .html(`<strong>${d.properties.name}</strong><br>${displayVal}`);
         })
+        .on("mouseover", (event, d) => {
+            const country = d.properties.name;
+
+            // Dispatch hover event for line chart
+            window.dispatchEvent(new CustomEvent("countryHover", { detail: country }));
+
+            d3.select(event.target)
+            .attr("stroke", "black")
+            .attr("stroke-width", 1.5);
+        })
         .on("mouseout", () => tooltip.style("display", "none"))
+        .on("mouseout", (event, d) => {
+             window.dispatchEvent(new CustomEvent("countryHoverEnd"));
+
+            d3.select(event.target)
+            .attr("stroke", "#333")
+            .attr("stroke-width", 0.5);
+        })
         .on("click", (event, d) => {
             const countryName = d.properties.name;
             window.dispatchEvent(new CustomEvent("countrySelected", { detail: countryName }));

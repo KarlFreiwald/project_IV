@@ -133,6 +133,30 @@ function init([climate, world]) {
         // If not selected: add it
         selectedCountries.push(c);
     }
+
+    // Hover highlight
+    window.addEventListener("countryHover", e => {
+      const c = e.detail;
+      d3.selectAll(".line-country")
+        .attr("opacity", d => d.country === c ? 1 : 0.2);
+
+      d3.selectAll("path") // map paths
+        .attr("opacity", d => d.properties?.name === c ? 1 : 0.4);
+    });
+
+    window.addEventListener("countryHoverEnd", () => {
+        d3.selectAll(".line-country").attr("opacity", 1);
+        d3.selectAll("path").attr("opacity", 1);
+    });
+
+    // Legend toggle → remove country
+    window.addEventListener("legendToggle", e => {
+        const c = e.detail;
+        selectedCountries = selectedCountries.filter(x => x !== c);
+        update();
+    });
+
+
     update();
 
     });
