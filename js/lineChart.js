@@ -75,8 +75,44 @@ export function drawLine(data, metric, countries) {
 
     // --- Line generator ---
     const line = d3.line()
+        .defined(d => d.value !== undefined && !isNaN(d.value))
         .x(d => x(d.year))
         .y(d => y(d.value));
+
+
+    svg.selectAll(".line-country")
+        .data(series)
+        .enter()
+        .append("path")
+        .attr("class", "line-country")
+        .attr("fill", "none")
+        .attr("stroke", d => color(d.country))
+        .attr("stroke-width", 2.5)
+        .attr("d", d => line(d.values));
+
+    // Draw circles for actual data points
+    svg.selectAll(".point-group")
+        .data(series)
+        .enter()
+        .append("g")
+        .attr("class", "point-group")
+        .selectAll("circle")
+        .data(d => d.values)   // each country's values
+        .enter()
+        .append("circle")
+        .filter(v => v.value !== undefined && !isNaN(v.value)) // only show real points
+        .attr("cx", v => x(v.year))
+        .attr("cy", v => y(v.value))
+        .attr("r", 3.5)
+        .attr("fill", (v, i, nodes) => {
+            const country = nodes[i].parentNode.__data__.country;
+            return color(country);
+        })
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5);
+
+
+
 
     // --- Draw X axis ---
     const [minYear, maxYear] = d3.extent(allYears);
@@ -121,17 +157,6 @@ export function drawLine(data, metric, countries) {
         .style("font-size", "15px")
         .style("font-weight", "bold")
         .text(`${metricLabel} - Selected Countries`);
-
-    // --- Draw all country lines ---
-    svg.selectAll(".line-country")
-        .data(series)
-        .enter()
-        .append("path")
-        .attr("class", "line-country")
-        .attr("fill", "none")
-        .attr("stroke", d => color(d.country))
-        .attr("stroke-width", 2.5)
-        .attr("d", d => line(d.values));
 
     // --- Add legend ---
     const legend = svg.append("g")
