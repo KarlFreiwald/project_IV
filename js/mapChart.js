@@ -41,7 +41,12 @@ export function drawMap(world, dataArr, metric = "value") {
                    .style("top", (event.pageY + 8) + "px")
                    .html(`<strong>${d.properties.name}</strong><br>${displayVal}`);
         })
-        .on("mouseout", () => tooltip.style("display", "none"));
+        .on("mouseout", () => tooltip.style("display", "none"))
+        .on("click", (event, d) => {
+            const countryName = d.properties.name;
+            window.dispatchEvent(new CustomEvent("countrySelected", { detail: countryName }));
+            });
+
 
     // --- Zoom Setup ---
     const zoom = d3.zoom()

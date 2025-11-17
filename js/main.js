@@ -11,6 +11,8 @@ Promise.all([
 ]).then(init);
 
 
+
+
 function init([climate, world]) {
     climate.forEach(d => {
         // Data parsing and cleanup
@@ -23,6 +25,7 @@ function init([climate, world]) {
 
     const eventTypes = [...new Set(climate.map(d => d.event_type))];
     const dropdown = d3.select("#event-dropdown");
+    let selectedCountries = [];   // stores all clicked countries
 
     // Dropdown-Button
     dropdown.append("div")
@@ -40,6 +43,11 @@ function init([climate, world]) {
         list.selectAll("input[type=checkbox]").property("checked", true);
         update();
       });
+    document.getElementById("reset-line").addEventListener("click", () => {
+      selectedCountries = [];
+      update();
+      });
+
 
     list.append("button")
       .text("Clear All")
@@ -114,6 +122,22 @@ function init([climate, world]) {
     });
 
     d3.select("#event-dropdown").on("change", update);
+
+    // Listen for country selection events coming from mapChart.js
+    window.addEventListener("countrySelected", e => {
+        const c = e.detail;
+    if (selectedCountries.includes(c)) {
+        // If country already selected: remove it
+        selectedCountries = selectedCountries.filter(x => x !== c);
+    } else {
+        // If not selected: add it
+        selectedCountries.push(c);
+    }
+    update();
+
+    });
+
+
     
     function update() {
         // Parse selected range from label (e.g. "2020 – 2025")
@@ -170,7 +194,7 @@ function init([climate, world]) {
         drawBar(arr, tabState.current);
         
         // New: Draw the Line Chart using the filtered data and current metric
-        drawLine(filtered, metricKey); 
+        drawLine(filtered, metricKey, selectedCountries);
 
     }
     update();
