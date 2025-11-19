@@ -132,7 +132,7 @@ export function drawLine(data, metric, countries) {
                .html(`
                    <strong>${country}</strong><br>
                    Year: ${v.year}<br>
-                   ${metricLabel}: ${v.value}
+                   ${metricLabel}: ${v.value.toFixed(1)}
                `);
         window.dispatchEvent(new CustomEvent("countryHover", { detail: country }));
         })
@@ -171,8 +171,8 @@ export function drawLine(data, metric, countries) {
     // Y label
     const metricLabel =
         metric === "value" ? "Incidents" :
-        metric === "damage" ? "Economic Damage (M USD)" :
-        metric === "aid" ? "International Aid (M USD)" :
+        metric === "damage" ? "Economic Damage (in $US Mio.)" :
+        metric === "aid" ? "International Aid (in $US Mio.)" :
         "Casualties";
 
     yAxisG.append("text")
