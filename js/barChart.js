@@ -57,7 +57,7 @@ export function drawBar(data, tab) {
             metric: m, 
             country: d.country, 
             value: d[m] || 0,
-            label: m === 'damage' ? 'Economic Damage' : 'International Aid'
+            label: m === 'damage' ? 'Economic Damage (in $US Mio.)' : 'International Aid (in $US Mio.)'
         })))
         .join("rect")
             .attr("x", d => x1(d.metric))
@@ -66,7 +66,7 @@ export function drawBar(data, tab) {
             .attr("height", d => Math.max(0, (height - margin.bottom) - y(d.value)))
             .attr("fill", d => color(d.metric))
             .on('mousemove', (event, d) => {
-                const fmt = d3.format(',.2f'); // Using .2f since both metrics are in millions USD
+                const fmt = d3.format(',.1f');
                 tooltip
                     .style('display', 'block')
                     .style('left', (event.pageX + 8) + 'px')
@@ -93,7 +93,7 @@ export function drawBar(data, tab) {
         .call(yAxis);
 
     // Y axis label/description
-    const yLabel = 'Value (million USD)'; // Combined label
+    const yLabel = 'Value ($US Mio.)';
     yAxisG.append('text')
         .attr('class', 'y-axis-label')
         .attr('transform', 'rotate(-90)')
