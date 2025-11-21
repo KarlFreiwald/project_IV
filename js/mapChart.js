@@ -6,6 +6,10 @@ export function drawMap(world, dataArr, metric = "value") {
     //const height = Math.round(width * 0.5);
     //const height = container.getBoundingClientRect().height || Math.round(width * 0.5);
     const height = Math.round(width * 0.55);
+    const unitLabel =
+    metric === "damage" ? "US$ Mio." :
+    metric === "aid" ? "US$ Mio." :
+    "";
     const tooltip = d3.select("#tooltip");
 
     d3.select("#map").html("");
@@ -25,8 +29,8 @@ export function drawMap(world, dataArr, metric = "value") {
 
     const lookup = new Map(dataArr.map(d => [d.country, d[metric]]));
 
-    svg.append("g")
-        .selectAll("path")
+    const mapGroup = svg.append("g").attr("class", "map-group");
+    mapGroup.selectAll("path")
         .data(world.features)
         .join("path")
         .attr("d", path)
@@ -39,7 +43,11 @@ export function drawMap(world, dataArr, metric = "value") {
             tooltip.style("display", "block")
                    .style("left", (event.pageX + 8) + "px")
                    .style("top", (event.pageY + 8) + "px")
-                   .html(`<strong>${d.properties.name}</strong><br>${displayVal}`);
+                   .html(
+                    `<strong>${d.properties.name}</strong><br>` +
+                    (unitLabel ? `${displayVal} (${unitLabel})` : displayVal)
+        );
+
         })
         .on("mouseover", (event, d) => {
             const country = d.properties.name;
@@ -68,17 +76,19 @@ export function drawMap(world, dataArr, metric = "value") {
     // --- Zoom Setup ---
     const zoom = d3.zoom()
         .scaleExtent([1, 10])
-        .on("zoom", (e) => svg.selectAll("path").attr("transform", e.transform));
+        .on("zoom", (e) => mapGroup.attr("transform", e.transform));
 
     svg.call(zoom);
     // --- Initial Zoom ---
     const initialTranslate = [-300, -50];
     const initialScale = 1.7;
-    svg.call(zoom.transform,
-      d3.zoomIdentity
+    svg.call(
+    zoom.transform,
+    d3.zoomIdentity
         .translate(initialTranslate[0], initialTranslate[1])
         .scale(initialScale)
     );
+
     // --- Zoom Buttons ---
     const buttonGroup = svg.append("g")
         .attr("class", "zoom-buttons")
@@ -115,68 +125,69 @@ export function drawMap(world, dataArr, metric = "value") {
     // --- End Zoom Setup ---
         // Add color bar
         // --- Color Legend (responsive) ---
-        const legendMargin = 16;
-        const maxLegendWidth = 200;
-        const minLegendWidth = 100;
-        const legendWidth = Math.max(minLegendWidth, Math.min(maxLegendWidth, width - 2 * legendMargin));
-        const legendHeight = 10;
-        const legendX = Math.max(legendMargin, width - legendWidth - legendMargin);
-        const legendY = Math.max(legendMargin, height - legendMargin);
+        // ===============================
+    // COLOR LEGEND
+    svg.selectAll(".legend-group").remove();
 
-        // Create group for the legend (bottom-right or left if too narrow)
-        const legendGroup = svg.append("g")
-        .attr("class", "legend")
-        .attr("transform", `translate(${legendX}, ${legendY})`);
+    const legendWidth = 180;
+    const legendHeight = 12;
 
-        // Define gradient
-        const defs = svg.append("defs");
-        const gradient = defs.append("linearGradient")
-        .attr("id", "legend-gradient")
+    const legendGroup = svg.append("g")
+        .attr("class", "legend-group")
+        .attr("transform", `translate(${20}, ${height - 40})`);  // bottom-left corner
+
+    // Create gradient definition
+    const defs = svg.append("defs");
+
+    const gradient = defs.append("linearGradient")
+        .attr("id", "color-legend-gradient")
         .attr("x1", "0%")
         .attr("x2", "100%");
 
-        gradient.selectAll("stop")
-        .data(d3.ticks(0, 1, 10))
-        .join("stop")
-        .attr("offset", d => `${d * 100}%`)
-        .attr("stop-color", d => color(d * maxVal));
+    // Fill gradient with sampled color values
+    const steps = 10;
+    d3.range(steps + 1).forEach(i => {
+        gradient.append("stop")
+            .attr("offset", `${(i / steps) * 100}%`)
+            .attr("stop-color", color((i / steps) * maxVal));
+    });
 
-        // Legend rectangle
-        legendGroup.append("rect")
+    // Gradient bar
+    legendGroup.append("rect")
         .attr("width", legendWidth)
         .attr("height", legendHeight)
-        .style("fill", "url(#legend-gradient)")
+        .style("fill", "url(#color-legend-gradient)")
         .attr("stroke", "#333")
-        .attr("rx", 3);
+        .attr("rx", 4);
 
-        // Legend scale + axis
-        const legendScale = d3.scaleLinear()
+    // Legend scale
+    const legendScale = d3.scaleLinear()
         .domain([0, maxVal])
         .range([0, legendWidth]);
 
-        const legendAxis = d3.axisBottom(legendScale)
-        .ticks(5)
+    const legendAxis = d3.axisBottom(legendScale)
+        .ticks(4)
         .tickSize(4)
-        .tickFormat(d3.format(".1f"));
+        .tickFormat(d3.format(".2s"));  // 1k, 10k, 1M etc.
 
-        legendGroup.append("g")
+    legendGroup.append("g")
         .attr("transform", `translate(0, ${legendHeight})`)
         .call(legendAxis)
         .select(".domain").remove();
 
-        const legendLabel = 
+    // Legend label
+    legendGroup.append("text")
+    .attr("x", legendWidth / 2)
+    .attr("y", -6)
+    .attr("text-anchor", "middle")
+    .attr("fill", "#333")
+    .style("font-size", "12px")
+    .text(
         metric === "value" ? "Incidents" :
-        metric === "damage" ? "Economic Damage (USD)" :
-        metric === "aid" ? "International Aid (USD)" :
-        "Casualties";
-
-        legendGroup.append("text")
-        .attr("x", legendWidth / 2)
-        .attr("y", -6)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "12px")
-        .attr("fill", "#333")
-        .text(legendLabel);
+        metric === "damage" ? "Economic Damage (in US$ Mio.)" :
+        metric === "aid" ? "International Aid (in US$ Mio.)" :
+        "Casualties"
+    );
 
 
 

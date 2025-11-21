@@ -38,7 +38,6 @@ goal:	fully functioning website
 - Land zu barChart hinzufügen
 - Pro capita
 - Basic Informationen einfügen (General settings, event type anzeigen)
-- heatmap scale
 - 
 
 
