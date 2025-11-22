@@ -1,4 +1,4 @@
-/* ========== Base ========== */
+/* ========== 1) Reset & Base ========== */
 *,
 *::before,
 *::after {
@@ -14,8 +14,7 @@ body {
   flex-direction: column; 
 }
 
-/* ========== Page Structure (Grid) ========== */
-
+/* ========== 2) Page Structure (Grid) ========== */
 #main-grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -49,15 +48,15 @@ body {
 #bar-switch-area {
     grid-area: bar-switch;
     display: flex;
-    justify-content: flex-end; /* Align to the right, next to the bar chart */
+    justify-content: flex-end;
     align-items: center;
-    padding: 0 10px; /* Some padding */
-    height: 100%; /* Take full height of its grid cell */
+    padding: 0 10px;
+    height: 100%;
     box-sizing: border-box;
-    z-index: 1; /* Above other content */
+    z-index: 1;
 }
 
-/* ========== Grid Area Layout & Styling ========== */
+/* ========== 3) Grid Area Layout & Styling ========== */
 
 /* R1, C1: Global Settings */
 #global-settings-area {
@@ -85,13 +84,12 @@ body {
 }
 
 #map {
-    flex: 1;             
-    height: 100%;        
+    flex: 1;
+    height: 100%;
     width: 100%;
     padding: 0;
 }
 
-/* R2, C2: Buttons Container (The new short row) */
 #buttons-container {
     grid-area: buttons;
     display: flex;
@@ -102,7 +100,19 @@ body {
     z-index: 50;
 }
 
-/* Style for the switch container */
+/* R2-R3, C1: Bar Chart (Spans two rows) */
+#bar {
+  grid-area: bar;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 6px;
+  padding: 10px;
+  min-height: 0; 
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
 .switch-container {
     display: flex;
     align-items: center;
@@ -131,19 +141,6 @@ body {
 
 .switch-option:not(.active):hover {
     background-color: #e0e0e0;
-}
-
-/* R2-R3, C1: Bar Chart (Spans two rows) */
-#bar {
-  grid-area: bar;
-  width: 100%;
-  height: 100%;
-  background: #fff;
-  border-radius: 6px;
-  padding: 10px;
-  min-height: 0; 
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
 }
 
 #linechart-container {
@@ -191,7 +188,7 @@ body {
     gap: 25px;
 }
 
-/* ========== Controls ========== */
+/* ========== 4) Controls ========== */
 .controls label {
   display: block;
   margin-top: 18px;
@@ -206,7 +203,7 @@ body {
   font-size: 13px;
 }
 
-/* ========== Tabs (Now inside #buttons-container) ========== */
+/* ========== 5) Tabs (Now inside #buttons-container) ========== */
 .tabs {
   display: flex;
   flex-wrap: nowrap; 
@@ -228,13 +225,13 @@ body {
   color: #fff;
 }
 
-/* ========== Chart / Map Containers ========== */
+/* ========== 6) Chart / Map Containers ========== */
 #map svg,
 #bar svg {
   display: block;
 }
 
-/* ========== Tooltip ========== */
+/* ========== 7) Tooltip ========== */
 .tooltip {
   position: absolute;
   pointer-events: none;
@@ -246,7 +243,7 @@ body {
   display: none;
 }
 
-/* ========== Multi Select ========== */
+/* ========== 8) Multi Select ========== */
 .multi-select {
   position: relative;
   width: 180px;
@@ -321,7 +318,7 @@ body {
   background-color: #eee;
 }
 
-/* ========== Year / Slider ========== */
+/* ========== 9) Year / Slider ========== */
 .year-range {
   display: flex;
   flex-direction: column;
@@ -338,7 +335,7 @@ body {
   margin: 10px 0;
 }
 
-/* ========== noUiSlider ========== */
+/* ========== 10) noUiSlider ========== */
 .noUi-target {
   background: #d3d3d3;
   border-radius: 6px;
@@ -371,6 +368,7 @@ body {
   top: -6px;
 }
 
+/* ========== 11) Event Panel ========== */
 #event-panel {
     display: flex;
     flex-direction: column;
