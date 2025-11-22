@@ -1,21 +1,21 @@
 import { drawMap } from "./mapChart.js";
 import { drawBar } from "./barChart.js";
-import { drawLine } from "./lineChart.js"; // New import for the line chart
+import { drawLine } from "./lineChart.js";
+
 const d3 = window.d3;
 const tabState = { current: "incidents" };
 
 Promise.all([
     d3.csv("data/climate.csv"),
     d3.json("data/world.geojson")
-    // d3.json("data/highResolution.geojson")
 ]).then(init);
 
 
 
-
 function init([climate, world]) {
+
+    // Prepare data
     climate.forEach(d => {
-        // Data parsing and cleanup
         d.year = +new Date(d.date).getFullYear();
         d.severity = +d.severity || 0;
         d.damage = +d.economic_impact_million_usd || 0;
@@ -24,124 +24,118 @@ function init([climate, world]) {
     });
 
     const eventTypes = [...new Set(climate.map(d => d.event_type))];
-    const dropdown = d3.select("#event-dropdown");
-    let selectedCountries = [];   // stores all clicked countries
+    const eventCheckboxContainer = d3.select("#event-checkbox-container");
+    let selectedCountries = [];
 
-    // Dropdown-Button
-    dropdown.append("div")
-      .attr("class", "dropdown-header")
-      .text("Select Event Types");
+    // Store selected event types (init: all)
+    const selectedTypesSet = new Set(eventTypes);
 
-    // Container für Checkboxen + Buttons
-    const list = dropdown.append("div")
-      .attr("class", "dropdown-list");
+    // Create clickable event boxes
+    eventTypes.forEach(type => {
+        const box = eventCheckboxContainer
+            .append("div")
+            .attr("class", "event-box active")
+            .attr("data-type", type)
+            .text(type);
 
-    // Buttons
-    list.append("button")
-      .text("Select All")
-      .on("click", () => {
-        list.selectAll("input[type=checkbox]").property("checked", true);
+        box.on("click", function () {
+            const isActive = selectedTypesSet.has(type);
+
+            if (isActive) {
+                selectedTypesSet.delete(type);
+                d3.select(this)
+                    .classed("active", false)
+                    .classed("inactive", true);
+            } else {
+                selectedTypesSet.add(type);
+                d3.select(this)
+                    .classed("inactive", false)
+                    .classed("active", true);
+            }
+
+            update();
+        });
+    });
+
+    // Select All
+    document.getElementById("event-select-all").addEventListener("click", () => {
+        selectedTypesSet.clear();
+        eventTypes.forEach(t => selectedTypesSet.add(t));
+
+        eventCheckboxContainer.selectAll(".event-box")
+            .classed("active", true)
+            .classed("inactive", false);
+
         update();
-      });
-    document.getElementById("reset-line").addEventListener("click", () => {
-      selectedCountries = [];
-      update();
-      });
+    });
 
+    // Deselect All
+    document.getElementById("event-deselect-all").addEventListener("click", () => {
+        selectedTypesSet.clear();
 
-    list.append("button")
-      .text("Clear All")
-      .on("click", () => {
-        list.selectAll("input[type=checkbox]").property("checked", false);
+        eventCheckboxContainer.selectAll(".event-box")
+            .classed("active", false)
+            .classed("inactive", true);
+
         update();
-      });
-
-    // Checkboxen für alle Eventtypen
-    list.selectAll("label")
-      .data(eventTypes)
-      .join("label")
-      .html(d => `<input type="checkbox" value="${d}" checked> ${d}`)
-      .on("change", update);
-
-    // Öffnen/Schließen beim Klick auf Header
-    dropdown.select(".dropdown-header").on("click", () => {
-      const isOpen = dropdown.classed("open");
-      d3.selectAll(".multi-select").classed("open", false); // schließt andere
-      dropdown.classed("open", !isOpen);
     });
 
-    // Dropdown schließen, wenn man außerhalb klickt
-    document.addEventListener("click", (event) => {
-      if (!dropdown.node().contains(event.target)) {
-        dropdown.classed("open", false);
-      }
+    // Tabs (Incidents / Damage / Aid / Casualties)
+    d3.selectAll(".tabs button").on("click", function () {
+        d3.selectAll(".tabs button").classed("active", false);
+        d3.select(this).classed("active", true);
+
+        tabState.current = this.dataset.tab;
+        update();
     });
 
-    // --- Activate Tabs ---
-    d3.selectAll(".tabs button").on("click", function() {
-      // Update button style
-      d3.selectAll(".tabs button").classed("active", false);
-      d3.select(this).classed("active", true);
-
-      // Update current tab state
-      tabState.current = this.dataset.tab;
-
-      // Refresh charts
-      update();
-    });
-
-    // --- Year Range Slider ---
-    const yearSlider = document.getElementById('yearRange');
+    // Year range slider
+    const yearSlider = document.getElementById("yearRange");
 
     noUiSlider.create(yearSlider, {
-      start: [2020, 2025],  // initial range
-      connect: true,
-      range: {
-        min: 2020,
-        max: 2025
-      },
-      step: 1,
-      tooltips: false
+        start: [2020, 2025],
+        connect: true,
+        range: { min: 2020, max: 2025 },
+        step: 1,
+        tooltips: false
     });
 
-    yearSlider.noUiSlider.on('update', function(values) {
-      const start = Math.round(values[0]);
-      const end = Math.round(values[1]);
-      d3.select("#year-label").text(`${start} – ${end}`);
-      // Note: The 'update' event is used to update the label text
+    yearSlider.noUiSlider.on("update", function (values) {
+        const start = Math.round(values[0]);
+        const end = Math.round(values[1]);
+        d3.select("#year-label").text(`${start} – ${end}`);
     });
 
-    // Call the main update function when the slider stops changing
-    yearSlider.noUiSlider.on('change', function() {
-      update(); 
-    });
+    yearSlider.noUiSlider.on("change", update);
 
-    d3.select("#severity-slider").on("input", function() {
+    // Severity Slider
+    d3.select("#severity-slider").on("input", function () {
         d3.select("#severity-label").text(this.value + "+");
         update();
     });
 
-    d3.select("#event-dropdown").on("change", update);
-
-    // Listen for country selection events coming from mapChart.js
+    // Click on a country in the map
     window.addEventListener("countrySelected", e => {
         const c = e.detail;
-    if (selectedCountries.includes(c)) {
-        // If country already selected: remove it
-        selectedCountries = selectedCountries.filter(x => x !== c);
-    } else {
-        // If not selected: add it
-        selectedCountries.push(c);
-    }
 
-    // Hover highlight
+        if (selectedCountries.includes(c)) {
+            selectedCountries = selectedCountries.filter(x => x !== c);
+        } else {
+            selectedCountries.push(c);
+        }
+
+        update();
+    });
+
+    // Hover highlight (Map + Line Chart)
     window.addEventListener("countryHover", e => {
-      const c = e.detail;
-      d3.selectAll(".line-country")
-        .attr("opacity", d => d.country === c ? 1 : 0.2);
+        const c = e.detail;
 
-      d3.selectAll("path") // map paths
-        .attr("opacity", d => d.properties?.name === c ? 1 : 0.4);
+        d3.selectAll(".line-country")
+            .attr("opacity", d => d.country === c ? 1 : 0.2);
+
+        d3.selectAll("path")
+            .attr("opacity", d => d.properties?.name === c ? 1 : 0.4);
     });
 
     window.addEventListener("countryHoverEnd", () => {
@@ -149,80 +143,60 @@ function init([climate, world]) {
         d3.selectAll("path").attr("opacity", 1);
     });
 
-    // Legend toggle → remove country
+    // Legend click → remove selected country
     window.addEventListener("legendToggle", e => {
         const c = e.detail;
         selectedCountries = selectedCountries.filter(x => x !== c);
         update();
     });
 
-
+    // Initial draw
     update();
 
-    });
+    // Resize handling
+    window.addEventListener("resize", update);
 
 
-    
+
+    // Main update function
     function update() {
-        // Parse selected range from label (e.g. "2020 – 2025")
-        const yearRange = d3.select('#year-label').text().split(' – ').map(Number);
+        const yearRange = d3.select("#year-label").text().split(" – ").map(Number);
         const startYear = yearRange[0];
         const endYear = yearRange[1];
         const sev = +d3.select("#severity-slider").property("value");
-        const selectedTypes = dropdown
-        .selectAll("input[type=checkbox]")
-        .filter(function() { return this.checked; })
-        .nodes()
-        .map(d => d.value);
+        const selectedTypes = Array.from(selectedTypesSet);
 
-        // --- Data Filtering ---
+        // Filter data
         const filtered = climate.filter(d =>
-           d.year >= startYear &&
-           d.year <= endYear &&
-           selectedTypes.includes(d.event_type) &&
-           d.severity >= sev
+            d.year >= startYear &&
+            d.year <= endYear &&
+            selectedTypes.includes(d.event_type) &&
+            d.severity >= sev
         );
 
-        // --- Data Aggregation (for Map/Bar Chart) ---
+        // Aggregate for map and bar
         const rolled = d3.rollups(
-          filtered,
-          v => ({
-            value: v.length, // incidents
-            damage: d3.sum(v, d => d.damage),
-            aid: d3.sum(v, d => d.aid),
-            casualties: d3.sum(v, d => d.casualties)
-          }),
-          d => d.country
-          );
+            filtered,
+            v => ({
+                value: v.length,
+                damage: d3.sum(v, d => d.damage),
+                aid: d3.sum(v, d => d.aid),
+                casualties: d3.sum(v, d => d.casualties)
+            }),
+            d => d.country
+        );
 
-        const arr = rolled.map(([country, o]) => ({
-            country, ...o
-        }));
+        const arr = rolled.map(([country, o]) => ({ country, ...o }));
 
-        // Determine which metric to display based on active tab
-        let metricKey = "value"; // default: incidents
-        switch (tabState.current) {
-            case "damage":
-                metricKey = "damage";
-                break;
-            case "aid":
-                metricKey = "aid";
-                break;
-            case "casualties":
-                metricKey = "casualties";
-                break;
-        }
+        // Which metric is active?
+        let metricKey = "value";
+        if (tabState.current === "damage") metricKey = "damage";
+        if (tabState.current === "aid") metricKey = "aid";
+        if (tabState.current === "casualties") metricKey = "casualties";
 
-        // --- Chart Updates ---
+        // Update charts
         drawMap(world, arr, metricKey);
         drawBar(arr, tabState.current);
-        
-        // New: Draw the Line Chart using the filtered data and current metric
         drawLine(filtered, metricKey, selectedCountries);
-
     }
-    update();
-
-    // Redraw charts on resize to keep them within their containers
-    window.addEventListener('resize', update);
 }

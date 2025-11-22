@@ -356,3 +356,113 @@ body {
 .noUi-horizontal .noUi-handle {
   top: -6px;
 }
+
+#event-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+}
+
+#event-header {
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+#event-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+#event-buttons button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    background: #ddd;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#event-buttons button:hover {
+    background: #ccc;
+}
+
+#event-checkbox-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 5px;
+} 
+
+.event-box {
+    flex: 1 1 calc(25% - 10px);
+    padding: 10px 14px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease-in-out;
+    border: 2px solid #ccc;
+    background: #f7f7f7;
+    color: #333;
+}
+
+
+/* Zustand: aktiv */
+.event-box.active {
+    background: #0077cc;
+    border-color: #005fa3;
+    color: white;
+    box-shadow: 0px 1px 4px rgba(0,0,0,0.2);
+}
+
+/* Zustand: inaktiv */
+.event-box.inactive {
+    opacity: 0.4;
+}
+
+#range-wrapper {
+    display: flex;
+    gap: 25px;
+    width: 100%;
+    align-items: center;
+    margin-top: -10px;
+}
+
+.range-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#event-buttons-row {
+    display: flex;
+    justify-content: space-between; /* Text links – Buttons rechts */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+
+.settings-info-inline {
+    background: #f7f7f7;
+    border-left: 4px solid #0077cc;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.3;
+    flex: 1; /* nimmt restliche Breite links ein */
+    margin-right: 15px;
+}
+
+
+
