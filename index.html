@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Impact of Climate Events on World Economics</title>
+    <meta charset="UTF-8">
+    <title>Impact of Climate Events on World Economics</title>
 
-<link rel="stylesheet" href="css/style.css">
-<script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 
-<link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
 </head>
 
 <body>
@@ -19,7 +19,6 @@
 
         <div class="controls">
 
-            <!-- Event Panel -->
             <div id="event-panel">
                 <div id="event-header">Filter by Event Categories</div>
 
@@ -28,13 +27,13 @@
                         These global settings control how all charts are filtered.
                     </div>
 
-                <div id="event-buttons">
-                    <button id="event-select-all">Select All</button>
-                    <button id="event-deselect-all">Deselect All</button>
+                    <div id="event-buttons">
+                        <button id="event-select-all">Select All</button>
+                        <button id="event-deselect-all">Deselect All</button>
+                    </div>
                 </div>
-            </div>
 
-            <div id="event-checkbox-container"></div>
+                <div id="event-checkbox-container"></div>
             </div>
 
             <div id="range-wrapper">
@@ -42,9 +41,9 @@
                 <div class="range-box">
                     <label>Year Range</label>
                     <div id="yearRange"></div>
-                    <span id="year-label">2000 – 2025</span>
+                    <span id="year-label">2020 – 2025</span>
                 </div>
-            
+
                 <div class="range-box">
                     <label>Severity</label>
                     <input type="range" id="severity-slider" min="0" max="9" value="0">
@@ -57,12 +56,17 @@
         </div>
     </div>
 
-    <!-- Map -->
     <div id="map-area-container">
         <div id="map"></div>
     </div>
 
-    <!-- Tabs -->
+    <div id="bar-switch-area">
+        <div class="switch-container" id="bar-sort-switch">
+            <div class="switch-option active" data-sort="damage">Economic Damage</div>
+            <div class="switch-option" data-sort="aid">International Aid</div>
+        </div>
+    </div>
+
     <div id="buttons-container" class="tabs">
         <button data-tab="incidents" class="active">Number of Incidents</button>
         <button data-tab="damage">Economic Damage</button>
@@ -70,10 +74,8 @@
         <button data-tab="casualties">Casualties</button>
     </div>
 
-    <!-- Bar Chart -->
     <div id="bar"></div>
 
-    <!-- Line Chart -->
     <div id="linechart-container">
         <div id="empty-space"></div>
         <div class="line-reset-wrapper">
@@ -83,11 +85,9 @@
 
 </div>
 
-<!-- Tooltips -->
 <div id="tooltip" class="tooltip"></div>
 <div id="line-tooltip" class="tooltip"></div>
 
-<!-- Scripts -->
 <script type="module" src="js/mapChart.js"></script>
 <script type="module" src="js/barChart.js"></script>
 <script type="module" src="js/lineChart.js"></script>

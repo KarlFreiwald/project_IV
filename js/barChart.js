@@ -1,21 +1,23 @@
 const d3 = window.d3;
-export function drawBar(data, tab) {
+// Change the function signature to accept sortMetric
+export function drawBar(data, sortMetric) {
     const container = d3.select("#bar").node();
     const width = Math.max(300, container.getBoundingClientRect().width);
-    const height = 350;
+    const height = 350; // Keep fixed height, responsive width
     const margin = { top: 20, right: 30, bottom: 80, left: 50 };
-    
+
     // 1. Define the metrics to plot and a color scale
     const metrics = ['damage', 'aid'];
     const color = d3.scaleOrdinal()
         .domain(metrics)
         .range(['#e34a33', '#0077cc']); // Red for Damage, Blue for Aid
-    
-    // Sort the data by damage (since the user requested top 10 by economic damage)
-    const key = 'damage'; 
+
+    // Sort the data by the provided sortMetric
+    // const key = 'damage'; // OLD
+    const key = sortMetric; // NEW: Use the dynamic sortMetric
     const sorted = [...data].sort((a, b) => (b[key] || 0) - (a[key] || 0));
     const top10Data = sorted.slice(0, 10);
-    
+
     const tooltip = d3.select('#tooltip');
     d3.select("#bar").html("");
 
@@ -49,31 +51,31 @@ export function drawBar(data, tab) {
         .selectAll("g")
         .data(top10Data)
         .join("g")
-            .attr("transform", d => `translate(${x(d.country)}, 0)`);
+        .attr("transform", d => `translate(${x(d.country)}, 0)`);
 
     barGroup.selectAll("rect")
         // Map the country data into two objects (one for damage, one for aid)
-        .data(d => metrics.map(m => ({ 
-            metric: m, 
-            country: d.country, 
+        .data(d => metrics.map(m => ({
+            metric: m,
+            country: d.country,
             value: d[m] || 0,
             label: m === 'damage' ? 'Economic Damage (in $US Mio.)' : 'International Aid (in $US Mio.)'
         })))
         .join("rect")
-            .attr("x", d => x1(d.metric))
-            .attr("y", d => y(d.value))
-            .attr("width", x1.bandwidth())
-            .attr("height", d => Math.max(0, (height - margin.bottom) - y(d.value)))
-            .attr("fill", d => color(d.metric))
-            .on('mousemove', (event, d) => {
-                const fmt = d3.format(',.1f');
-                tooltip
-                    .style('display', 'block')
-                    .style('left', (event.pageX + 8) + 'px')
-                    .style('top', (event.pageY + 8) + 'px')
-                    .html(`<strong>${d.country}</strong><br>${d.label}: ${fmt(d.value)}`);
-            })
-            .on('mouseout', () => tooltip.style('display', 'none'));
+        .attr("x", d => x1(d.metric))
+        .attr("y", d => y(d.value))
+        .attr("width", x1.bandwidth())
+        .attr("height", d => Math.max(0, (height - margin.bottom) - y(d.value)))
+        .attr("fill", d => color(d.metric))
+        .on('mousemove', (event, d) => {
+            const fmt = d3.format(',.1f');
+            tooltip
+                .style('display', 'block')
+                .style('left', (event.pageX + 8) + 'px')
+                .style('top', (event.pageY + 8) + 'px')
+                .html(`<strong>${d.country}</strong><br>${d.label}: ${fmt(d.value)}`);
+        })
+        .on('mouseout', () => tooltip.style('display', 'none'));
 
     // X axis with country names
     const xAxis = d3.axisBottom(x);
@@ -111,18 +113,18 @@ export function drawBar(data, tab) {
     legend.selectAll('rect')
         .data(metrics)
         .join('rect')
-            .attr('x', 0)
-            .attr('y', (d, i) => i * 20)
-            .attr('width', 10)
-            .attr('height', 10)
-            .attr('fill', d => color(d));
+        .attr('x', 0)
+        .attr('y', (d, i) => i * 20)
+        .attr('width', 10)
+        .attr('height', 10)
+        .attr('fill', d => color(d));
 
     legend.selectAll('text')
         .data(metrics)
         .join('text')
-            .attr('x', 15)
-            .attr('y', (d, i) => i * 20 + 9)
-            .attr('fill', '#333')
-            .style('font-size', '11px')
-            .text(d => d === 'damage' ? 'Economic Damage' : 'International Aid');
+        .attr('x', 15)
+        .attr('y', (d, i) => i * 20 + 9)
+        .attr('fill', '#333')
+        .style('font-size', '11px')
+        .text(d => d === 'damage' ? 'Economic Damage' : 'International Aid');
 }

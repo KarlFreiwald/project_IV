@@ -4,6 +4,7 @@ import { drawLine } from "./lineChart.js";
 
 const d3 = window.d3;
 const tabState = { current: "incidents" };
+const barSortState = { current: "damage" }; // NEW: State for bar chart sorting
 
 Promise.all([
     d3.csv("data/climate.csv"),
@@ -88,6 +89,15 @@ function init([climate, world]) {
         tabState.current = this.dataset.tab;
         update();
     });
+
+    // NEW: Bar Chart Sort Switch
+    d3.selectAll("#bar-sort-switch .switch-option").on("click", function () {
+        d3.selectAll("#bar-sort-switch .switch-option").classed("active", false);
+        d3.select(this).classed("active", true);
+        barSortState.current = this.dataset.sort;
+        update();
+    });
+
 
     // Year range slider
     const yearSlider = document.getElementById("yearRange");
@@ -196,7 +206,8 @@ function init([climate, world]) {
 
         // Update charts
         drawMap(world, arr, metricKey);
-        drawBar(arr, tabState.current);
+        // NEW: Pass the barSortState to drawBar
+        drawBar(arr, barSortState.current);
         drawLine(filtered, metricKey, selectedCountries);
     }
 }
