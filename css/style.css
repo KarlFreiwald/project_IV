@@ -33,7 +33,6 @@ body {
     position: relative;
 }
 
-/* New Styling for the Title inside the Controls Box */
 .section-title {
     font-size: 20px;
     font-weight: bold;
@@ -46,15 +45,16 @@ body {
 }
 
 #bar-switch-area {
-    grid-area: bar-switch;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 0 10px;
-    height: 100%;
-    box-sizing: border-box;
-    z-index: 1;
+  grid-area: bar-switch;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  height: 100%;
+  box-sizing: border-box;
+  z-index: 1;
 }
+
 
 /* ========== 3) Grid Area Layout & Styling ========== */
 
