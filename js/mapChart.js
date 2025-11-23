@@ -1,10 +1,7 @@
 const d3 = window.d3;
 export function drawMap(world, dataArr, metric = "value") {
     const container = d3.select("#map").node();
-    //const width = Math.max(320, container.getBoundingClientRect().width);
     const width = container.getBoundingClientRect().width;
-    //const height = Math.round(width * 0.5);
-    //const height = container.getBoundingClientRect().height || Math.round(width * 0.5);
     const height = Math.round(width * 0.55);
     const unitLabel =
     metric === "damage" ? "US$ Mio." :
@@ -52,7 +49,7 @@ export function drawMap(world, dataArr, metric = "value") {
         .on("mouseover", (event, d) => {
             const country = d.properties.name;
 
-            // Dispatch hover event for line chart
+            //Dispatch hover event for line chart
             window.dispatchEvent(new CustomEvent("countryHover", { detail: country }));
 
             d3.select(event.target)
@@ -123,9 +120,6 @@ export function drawMap(world, dataArr, metric = "value") {
         });
 
     // --- End Zoom Setup ---
-        // Add color bar
-        // --- Color Legend (responsive) ---
-        // ===============================
     // COLOR LEGEND
     svg.selectAll(".legend-group").remove();
 
@@ -134,7 +128,7 @@ export function drawMap(world, dataArr, metric = "value") {
 
     const legendGroup = svg.append("g")
         .attr("class", "legend-group")
-        .attr("transform", `translate(${20}, ${height - 40})`);  // bottom-left corner
+        .attr("transform", `translate(${20}, ${height - 40})`);  //bottom-left corner
 
     // Create gradient definition
     const defs = svg.append("defs");
@@ -160,7 +154,7 @@ export function drawMap(world, dataArr, metric = "value") {
         .attr("stroke", "#333")
         .attr("rx", 4);
 
-    // Legend scale
+    //Legend scale
     const legendScale = d3.scaleLinear()
         .domain([0, maxVal])
         .range([0, legendWidth]);

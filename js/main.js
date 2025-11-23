@@ -4,13 +4,34 @@ import { drawLine } from "./lineChart.js";
 
 const d3 = window.d3;
 const tabState = { current: "incidents" };
-const barSortState = { current: "damage" }; // NEW: State for bar chart sorting
+const barSortState = { current: "damage" };
 
 Promise.all([
     d3.csv("data/climate.csv"),
     d3.json("data/world.geojson")
 ]).then(init);
 
+// --- HELP TOOLTIP LOGIC ---
+function showHelp(text, anchor) {
+    d3.selectAll(".help-tooltip").remove();
+
+    const box = d3.select(anchor)
+        .append("div")
+        .attr("class", "help-tooltip")
+        .html(text);
+
+    box.style("display", "block");
+
+    // Hide when clicked anywhere else
+    setTimeout(() => {
+        document.addEventListener("click", function hide(ev) {
+            if (!anchor.contains(ev.target)) {
+                box.remove();
+                document.removeEventListener("click", hide);
+            }
+        });
+    }, 10);
+}
 
 
 function init([climate, world]) {
@@ -81,16 +102,7 @@ function init([climate, world]) {
         update();
     });
 
-    // Tabs (Incidents / Damage / Aid / Casualties)
-    d3.selectAll(".tabs button").on("click", function () {
-        d3.selectAll(".tabs button").classed("active", false);
-        d3.select(this).classed("active", true);
-
-        tabState.current = this.dataset.tab;
-        update();
-    });
-
-    // NEW: Bar Chart Sort Switch
+    // Bar Chart Sort Switch
     d3.selectAll("#bar-sort-switch .switch-option").on("click", function () {
         d3.selectAll("#bar-sort-switch .switch-option").classed("active", false);
         d3.select(this).classed("active", true);
@@ -137,7 +149,7 @@ function init([climate, world]) {
         update();
     });
 
-    // Hover highlight (Map + Line Chart)
+    //Hover highlight (Map + Line Chart)
     window.addEventListener("countryHover", e => {
         const c = e.detail;
 
@@ -153,11 +165,17 @@ function init([climate, world]) {
         d3.selectAll("path").attr("opacity", 1);
     });
 
-    // Legend click → remove selected country
+    //Legend click → remove selected country
     window.addEventListener("legendToggle", e => {
         const c = e.detail;
         selectedCountries = selectedCountries.filter(x => x !== c);
         update();
+    });
+
+    // Reset Line Chart Button
+    document.getElementById("reset-line").addEventListener("click", () => {
+        selectedCountries = [];         
+        update();                     
     });
 
     // Initial draw
@@ -166,7 +184,39 @@ function init([climate, world]) {
     // Resize handling
     window.addEventListener("resize", update);
 
+    // Help button: Bar Sort Switch
+   document.querySelectorAll(".help-button").forEach(btn => {
+        btn.addEventListener("click", (event) => {
+            event.stopPropagation();     
+            event.preventDefault();
 
+            const tooltipId = btn.dataset.help;
+            const tooltip = document.getElementById(tooltipId);
+
+        // Tooltip toggle
+            document.querySelectorAll(".help-tooltip").forEach(t => {
+               if (t !== tooltip) t.classList.remove("show");
+            });
+
+            tooltip.classList.toggle("show");
+        });
+    });
+
+    // When click outter box close
+    document.addEventListener("click", () => {
+        document.querySelectorAll(".help-tooltip").forEach(t => t.classList.remove("show"));
+    });
+
+    d3.selectAll(".tabs button").on("click", function (event) {
+    if (event.target.closest(".help-button")) return;
+    if (event.target.classList.contains("help-button")) return;
+
+    d3.selectAll(".tabs button").classed("active", false);
+    d3.select(this).classed("active", true);
+
+    tabState.current = this.dataset.tab;
+    update();
+    });
 
     // Main update function
     function update() {
@@ -206,7 +256,6 @@ function init([climate, world]) {
 
         // Update charts
         drawMap(world, arr, metricKey);
-        // NEW: Pass the barSortState to drawBar
         drawBar(arr, barSortState.current);
         drawLine(filtered, metricKey, selectedCountries);
     }

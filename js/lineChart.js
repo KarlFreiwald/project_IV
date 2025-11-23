@@ -2,10 +2,15 @@ const d3 = window.d3;
 const fmt = d3.format(".2f");
 
 export function drawLine(data, metric, countries) {
-    // Remove previous contents
+
+    const metricLabel =
+        metric === "value" ? "Incidents" :
+        metric === "damage" ? "Economic Damage (in $US Mio.)" :
+        metric === "aid" ? "International Aid (in $US Mio.)" :
+        "Casualties";
     d3.select("#empty-space").html("");
 
-    // --- If no countries are selected, show a neutral message ---
+    //If no countries are selected, show a neutral message ---
     if (!countries || countries.length === 0) {
         d3.select("#empty-space")
             .append("svg")
@@ -21,13 +26,13 @@ export function drawLine(data, metric, countries) {
         return;
     }
 
-    // --- Filter dataset to only include selected countries ---
+    //Filter dataset to only include selected countries
     const filtered = data.filter(d => countries.includes(d.country));
 
-    // Group by country
+    //Group by country
     const grouped = d3.groups(filtered, d => d.country);
 
-    // --- Chart setup ---
+    //Chart setup
     const container = d3.select("#empty-space").node();
     const width = container.getBoundingClientRect().width;
     const containerHeight = container.getBoundingClientRect().height;
@@ -44,7 +49,7 @@ export function drawLine(data, metric, countries) {
         .attr("width", width)
         .attr("height", height);
 
-    // --- Aggregate yearly data for each selected country ---
+    //Aggregate yearly data for each selected country
     const series = grouped.map(([country, values]) => {
         const yearly = d3.rollups(
             values,
@@ -62,7 +67,7 @@ export function drawLine(data, metric, countries) {
         return { country, values: yearly };
     });
 
-    // --- Compute X & Y domains ---
+    //Compute X & Y domains
     const allYears = series.flatMap(s => s.values.map(v => v.year));
     const x = d3.scaleLinear()
         .domain(d3.extent(allYears))
@@ -74,7 +79,7 @@ export function drawLine(data, metric, countries) {
         .nice()
         .range([height - margin.bottom, margin.top]);
 
-    // --- Line generator ---
+    //Line generator
     const line = d3.line()
         .defined(d => d.value !== undefined && !isNaN(d.value))
         .x(d => x(d.year))
@@ -99,7 +104,7 @@ export function drawLine(data, metric, countries) {
 
     
 
-    // Draw circles for actual data points
+    //Draw circles for actual data points
     svg.selectAll(".point-group")
         .data(series)
         .enter()
@@ -141,15 +146,9 @@ export function drawLine(data, metric, countries) {
             window.dispatchEvent(new CustomEvent("countryHoverEnd"));
         });
 
-        
-        
-        
         ;
 
-
-
-
-    // --- Draw X axis ---
+    //Draw X axis
     const [minYear, maxYear] = d3.extent(allYears);
     // Create ticks dynamically (1 tick per year)
     const yearTicks = d3.range(minYear, maxYear + 1);
@@ -163,17 +162,10 @@ export function drawLine(data, metric, countries) {
         );
 
 
-    // --- Draw Y axis ---
+    //Draw Y axis
     const yAxisG = svg.append("g")
         .attr("transform", `translate(${margin.left}, 0)`)
         .call(d3.axisLeft(y).ticks(5));
-
-    // Y label
-    const metricLabel =
-        metric === "value" ? "Incidents" :
-        metric === "damage" ? "Economic Damage (in $US Mio.)" :
-        metric === "aid" ? "International Aid (in $US Mio.)" :
-        "Casualties";
 
     yAxisG.append("text")
         .attr("transform", "rotate(-90)")
@@ -184,7 +176,7 @@ export function drawLine(data, metric, countries) {
         .attr("font-size", "12px")
         .text(metricLabel);
 
-    // --- Chart title ---
+    //Chart title 
     svg.append("text")
         .attr("x", width / 2)
         .attr("y", 18)
@@ -193,8 +185,8 @@ export function drawLine(data, metric, countries) {
         .style("font-weight", "bold")
         .text(`${metricLabel} - Selected Countries`);
 
-    // --- Add legend ---
-    // --- Add legend with click & hover ---
+    //Add legend
+    //Add legend with click & hover
     const legend = svg.append("g")
         .attr("transform", `translate(${width - 120}, ${margin.top})`);
 
@@ -205,14 +197,14 @@ export function drawLine(data, metric, countries) {
         .attr("transform", (d, i) => `translate(0, ${i * 20})`)
         .style("cursor", "pointer");
 
-    // colored box
+    //colored box
     legendItems.append("rect")
         .attr("width", 12)
         .attr("height", 12)
         .attr("fill", d => color(d.country))
         .attr("stroke", "#333");
 
-    // label
+    //label
     legendItems.append("text")
         .attr("x", 18)
         .attr("y", 10)
@@ -220,13 +212,13 @@ export function drawLine(data, metric, countries) {
         .style("font-size", "12px")
         .text(d => d.country);
 
-    // === CLICK to toggle ===
+    //Click to toggle
     legendItems.on("click", (event, d) => {
         const country = d.country;
         window.dispatchEvent(new CustomEvent("legendToggle", { detail: country }));
     });
 
-    // === Hover highlight ===
+    //higlight when hover
     legendItems.on("mouseover", (event, d) => {
         window.dispatchEvent(new CustomEvent("countryHover", { detail: d.country }));
     });

@@ -52,7 +52,6 @@
 
             </div>
 
-
         </div>
     </div>
 
@@ -60,18 +59,36 @@
         <div id="map"></div>
     </div>
 
+    <!-- BAR SWITCH -->
     <div id="bar-switch-area">
         <div class="switch-container" id="bar-sort-switch">
             <div class="switch-option active" data-sort="damage">Economic Damage</div>
             <div class="switch-option" data-sort="aid">International Aid</div>
+
+            <div class="help-wrapper">
+                <button class="help-button" data-help="bar-help">?</button>
+                <div id="bar-help" class="help-tooltip left">
+                    Here you can choose how the bar chart should be sorted.
+                    “Economic Damage” sorts by total economic losses, 
+                    while “International Aid” sorts by aid received.
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- METRIC SWITCH (MAP + LINE) -->
     <div id="buttons-container" class="tabs">
         <button data-tab="incidents" class="active">Number of Incidents</button>
         <button data-tab="damage">Economic Damage</button>
         <button data-tab="aid">International Aid</button>
         <button data-tab="casualties">Casualties</button>
+
+        <div class="help-wrapper">
+            <button class="help-button" data-help="metric-help">?</button>
+            <div id="metric-help" class="help-tooltip left">
+                 These buttons control which metric is displayed in the map and line chart. You can add countries to the lineplot by clicking on them on the map.
+            </div>
+        </div>
     </div>
 
     <div id="bar"></div>
