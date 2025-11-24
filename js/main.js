@@ -11,7 +11,7 @@ Promise.all([
     d3.json("data/world.geojson")
 ]).then(init);
 
-// --- HELP TOOLTIP LOGIC ---
+//Help tooltip logic
 function showHelp(text, anchor) {
     d3.selectAll(".help-tooltip").remove();
 
@@ -221,7 +221,7 @@ function init([climate, world]) {
     // Main update function
     function update() {
         const selectedTypes = Array.from(selectedTypesSet);
-        // --- If NO event types selected → show message instead of map ---
+        //If NO event types selected → show message instead of map
         if (selectedTypes.length === 0) {
             d3.select("#map").html(""); // remove map
             d3.select("#map")
@@ -229,7 +229,7 @@ function init([climate, world]) {
                 .attr("class", "map-empty-msg")
                 .text("Please select at least one event category to display the map.");
 
-            // --- Bar Chart ---
+            //Bar Chart
         d3.select("#bar").html("");
         d3.select("#bar")
             .append("div")

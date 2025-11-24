@@ -6,15 +6,13 @@ export function drawBar(data, sortMetric) {
     const height = 350; // Keep fixed height, responsive width
     const margin = { top: 20, right: 30, bottom: 80, left: 50 };
 
-    // 1. Define the metrics to plot and a color scale
+    //Define the metrics to plot and a color scale
     const metrics = ['damage', 'aid'];
     const color = d3.scaleOrdinal()
         .domain(metrics)
         .range(['#e34a33', '#0077cc']); // Red for Damage, Blue for Aid
 
-    // Sort the data by the provided sortMetric
-    // const key = 'damage'; // OLD
-    const key = sortMetric; // NEW: Use the dynamic sortMetric
+    const key = sortMetric; 
     const sorted = [...data].sort((a, b) => (b[key] || 0) - (a[key] || 0));
     const top10Data = sorted.slice(0, 10);
 
@@ -26,19 +24,19 @@ export function drawBar(data, sortMetric) {
         .attr("width", width)
         .attr("height", height);
 
-    // 2. Define the Outer X Scale (for Countries)
+    //Define the Outer X Scale (for Countries)
     const x = d3.scaleBand()
         .range([margin.left, width - margin.right])
         .padding(0.2)
         .domain(top10Data.map(d => d.country));
 
-    // 3. Define the Inner X Scale (for the two metrics within each country group)
+    //Define the Inner X Scale (for the two metrics within each country group)
     const x1 = d3.scaleBand()
         .domain(metrics)
         .range([0, x.bandwidth()])
         .padding(0.05);
 
-    // 4. Define the Y Scale (domain based on the maximum of EITHER metric)
+    //Define the Y Scale (domain based on the maximum of EITHER metric)
     const maxVal = d3.max(top10Data, d => d3.max(metrics, m => d[m]));
 
     const y = d3.scaleLinear()
@@ -46,7 +44,7 @@ export function drawBar(data, sortMetric) {
         .nice()
         .range([height - margin.bottom, margin.top]);
 
-    // 5. Group the data by country and draw the two bars per group
+    //Group the data by country and draw the two bars per group
     const barGroup = svg.append("g")
         .selectAll("g")
         .data(top10Data)
@@ -88,7 +86,7 @@ export function drawBar(data, sortMetric) {
         .attr("dx", "-0.5em")
         .attr("dy", "0.1em");
 
-        // --- Add dynamic chart title ---
+        //Add dynamic chart title
     svg.append("text")
         .attr("x", width / 2)
         .attr("y", margin.top - 5)
@@ -119,7 +117,7 @@ export function drawBar(data, sortMetric) {
         .attr('font-size', '12px')
         .text(yLabel);
 
-    // 6. Add a basic legend for the two metrics
+    //Add a basic legend for the two metrics
     const legend = svg.append('g')
         .attr('transform', `translate(${width - margin.right - 100}, 20)`);
 

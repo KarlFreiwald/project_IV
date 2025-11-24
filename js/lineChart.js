@@ -149,10 +149,7 @@ export function drawLine(data, metric, countries) {
         });
 
         ;
-
-    //Draw X axis
     const [minYear, maxYear] = d3.extent(allYears);
-    // Create ticks dynamically (1 tick per year)
     const yearTicks = d3.range(minYear, maxYear + 1);
 
     svg.append("g")
