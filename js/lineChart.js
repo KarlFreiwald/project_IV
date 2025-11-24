@@ -9,22 +9,21 @@ export function drawLine(data, metric, countries) {
         metric === "aid" ? "International Aid (in $US Mio.)" :
         "Casualties";
     d3.select("#empty-space").html("");
+        //If no countries are selected, show a neutral message ---
+        if (!countries || countries.length === 0) {
 
-    //If no countries are selected, show a neutral message ---
-    if (!countries || countries.length === 0) {
-        d3.select("#empty-space")
-            .append("svg")
-            .attr("width", 300)
-            .attr("height", 150)
-            .append("text")
-            .attr("x", 150)
-            .attr("y", 75)
-            .attr("text-anchor", "middle")
-            .attr("fill", "#666")
-            .style("font-size", "16px")
-            .text("Please select a country on the map");
+        const container = d3.select("#empty-space");
+        container.html("");
+
+        const box = container.append("div")
+            .attr("class", "line-empty-msg")
+            .html(`
+            <strong>Select a country on the map to see the occurred events over time.</strong><br><br>
+            `);
+
         return;
     }
+
 
     //Filter dataset to only include selected countries
     const filtered = data.filter(d => countries.includes(d.country));
@@ -36,8 +35,11 @@ export function drawLine(data, metric, countries) {
     const container = d3.select("#empty-space").node();
     const width = container.getBoundingClientRect().width;
     const containerHeight = container.getBoundingClientRect().height;
-    const height = containerHeight - 50;  // leave 50px of space for the button
-    const margin = { top: 30, right: 30, bottom: 50, left: 60 };
+    //const height = containerHeight - 50;  // leave 50px of space for the button
+    //const margin = { top: 10, right: 30, bottom: 30, left: 60 };
+    //const container = d3.select("#linechart-container").node();
+    const height = container.getBoundingClientRect().height * 0.9;
+    const margin = { top: 10, right: 40, bottom: 20, left: 60 };
 
     // Color scale for multiple country lines
     const color = d3.scaleOrdinal()
@@ -179,7 +181,7 @@ export function drawLine(data, metric, countries) {
     //Chart title 
     svg.append("text")
         .attr("x", width / 2)
-        .attr("y", 18)
+        .attr("y", margin.top + 10)
         .attr("text-anchor", "middle")
         .style("font-size", "15px")
         .style("font-weight", "bold")

@@ -50,13 +50,13 @@ function init([climate, world]) {
     let selectedCountries = [];
 
     // Store selected event types (init: all)
-    const selectedTypesSet = new Set(eventTypes);
+    const selectedTypesSet = new Set();   // start empty
 
     // Create clickable event boxes
     eventTypes.forEach(type => {
         const box = eventCheckboxContainer
             .append("div")
-            .attr("class", "event-box active")
+            .attr("class", "event-box inactive")
             .attr("data-type", type)
             .text(type);
 
@@ -220,11 +220,31 @@ function init([climate, world]) {
 
     // Main update function
     function update() {
+        const selectedTypes = Array.from(selectedTypesSet);
+        // --- If NO event types selected → show message instead of map ---
+        if (selectedTypes.length === 0) {
+            d3.select("#map").html(""); // remove map
+            d3.select("#map")
+                .append("div")
+                .attr("class", "map-empty-msg")
+                .text("Please select at least one event category to display the map.");
+
+            // --- Bar Chart ---
+        d3.select("#bar").html("");
+        d3.select("#bar")
+            .append("div")
+            .attr("class", "bar-empty-msg")
+            .text("Please select a event type to display economic damage vs aid received.");
+        drawLine([], "value", []); // fully clear line chart
+        return; // stop normal update
+        }
+
+
+
         const yearRange = d3.select("#year-label").text().split(" – ").map(Number);
         const startYear = yearRange[0];
         const endYear = yearRange[1];
         const sev = +d3.select("#severity-slider").property("value");
-        const selectedTypes = Array.from(selectedTypesSet);
 
         // Filter data
         const filtered = climate.filter(d =>

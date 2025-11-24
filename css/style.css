@@ -143,6 +143,7 @@ body {
   grid-area: linechart;
   background: #fff;
   padding: 10px;
+  padding-top: 30px;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -505,3 +506,95 @@ body {
   right: 32px;
   top: 32px;
 }
+
+.map-empty-msg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #fafafa;
+  border: 2px dashed #bbb;
+
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #555;
+  text-align: center;
+  padding: 20px;
+}
+
+.bar-empty-msg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #fafafa;
+  border: 2px dashed #bbb;
+
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #555;
+  text-align: center;
+  padding: 20px;
+}
+
+.line-empty-msg {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    background: #fafafa;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+
+    padding: 25px;
+    box-sizing: border-box;
+}
+.line-empty-msg strong {
+    font-size: 18px;
+    color: #005fa3;
+}
+#linechart-guidance {
+    text-align: right;
+    font-size: 14px;
+    color: #555;
+    padding: 5px 10px 10px;
+    line-height: 1.4;
+}
+/* Footer below line chart */
+.linechart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    margin-top: 10px;
+    padding: 10px 5px;
+}
+
+.linechart-info {
+    flex: 1;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.4;
+    max-width: 70%;
+}
+
+.line-reset-wrapper,
+.linechart-footer button {
+    flex-shrink: 0;
+}
+
+
+

@@ -88,6 +88,19 @@ export function drawBar(data, sortMetric) {
         .attr("dx", "-0.5em")
         .attr("dy", "0.1em");
 
+        // --- Add dynamic chart title ---
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", margin.top - 5)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("font-weight", "600")
+        .text(sortMetric === "damage"
+            ? "Top 10 Countries by Economic Damage"
+            : "Top 10 Countries by International Aid"
+        );
+    
+
     // Y axis with ticks
     const yAxis = d3.axisLeft(y).ticks(5).tickSizeOuter(0);
     const yAxisG = svg.append('g')
